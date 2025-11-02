@@ -38,3 +38,41 @@ class TestVarasto(unittest.TestCase):
 
         # varastossa pitäisi olla tilaa 10 - 8 + 2 eli 4
         self.assertAlmostEqual(self.varasto.paljonko_mahtuu(), 4)
+    
+    def test_negatiivinen_lisays_ei_muuta_saldoa(self):
+        saldo = self.varasto.saldo
+        self.varasto.lisaa_varastoon(-5)
+        self.assertEqual(saldo, self.varasto.saldo)
+    
+    def test_saldon_lisaaminen_yli_maksimin_tuottaa_maksimin(self):
+        self.varasto.lisaa_varastoon(1e6)
+        self.assertEqual(self.varasto.saldo, self.varasto.tilavuus)
+    
+    def test_negatiivinen_otto_ei_muuta_saldo(self):
+        saldo = self.varasto.saldo
+        self.varasto.ota_varastosta(-5)
+        self.assertEqual(saldo, self.varasto.saldo)
+    
+    def test_yli_saldon_otto_ottaa_kaiken(self):
+        saldo = self.varasto.saldo
+        otto = self.varasto.ota_varastosta(1e6)
+        self.assertEqual(saldo, otto)
+        self.assertEqual(0, self.varasto.saldo)
+    
+    def test_print(self):
+        string = "saldo = 0, vielä tilaa 10" 
+        self.assertEqual(self.varasto.__str__(), string)
+
+class TestVirheellinenConstructor(unittest.TestCase):
+    def setUp(self):
+        self.varasto = Varasto(-1, -1)
+    
+    def test_konstruktor_negatiivinen_tilavuus_antaa_nollan(self):
+        self.assertEqual(self.varasto.tilavuus, 0)
+
+    def test_konstruktor_negatiivinen_saldo_antaa_nollan(self):
+        self.assertEqual(self.varasto.saldo, 0)
+
+def test_konstruktor_tarkistaa_ettei_saldo_ylita_tilavuutta():
+    varasto = Varasto(5, 100)
+    assert varasto.saldo == 5
