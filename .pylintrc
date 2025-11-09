@@ -17,7 +17,11 @@ disable=raw-checker-failed,
         missing-class-docstring
 
 [FORMAT]
+max-line-length=80
 
 [REFACTORING]
+max-nested-blocks=2
 
 [DESIGN]
+max-statements=15
+max-bool-expr=5
